@@ -1,0 +1,6 @@
+a.wp-plugin-dictionary-word {
+    cursor: help;
+    font-weight: bold;
+    border-bottom: 1px dashed #000000;
+    text-decoration: none !important;
+}
