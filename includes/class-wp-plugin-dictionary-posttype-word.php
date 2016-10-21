@@ -56,14 +56,14 @@ class WP_Plugin_Dictionary_Posttype_Word {
 		return array(
 			'labels'             => $this->posttype_labels(),
 			'description'        => __( 'Description.', 'wp-plugin-dictionary' ),
-			'public'             => true,
-			'publicly_queryable' => true,
+			'public'             => false,
+			'exclude_from_search' => true,
+			'publicly_queryable' => false,
 			'show_ui'            => true,
 			'show_in_menu'       => true,
 			'query_var'          => true,
-			'rewrite'            => array( 'slug' => 'ordlista' ),
 			'capability_type'    => 'post',
-			'has_archive'        => true,
+			'has_archive'        => false,
 			'hierarchical'       => false,
 			'menu_position'      => null,
 			'supports'           => array( 'title', 'editor' )
