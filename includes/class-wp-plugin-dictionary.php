@@ -192,6 +192,7 @@ class Wp_Plugin_Dictionary {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
 		$this->loader->add_action( 'init', $wp_plugin_dictionary_posttype_word, 'register' );
+		$this->loader->add_action( 'save_post', $wp_plugin_dictionary_posttype_word, 'save' );
 
 	}
 

@@ -49,20 +49,34 @@ class WP_Plugin_Dictionary_Shortcode {
 
 		if( !empty( $content ) ) {
 
-			$query = $wpdb->prepare(
-				"SELECT post_content 
-					FROM $wpdb->posts 
-					WHERE 
-						LOWER(post_title) = '%s' AND 
-						post_type = 'dictionary_word' AND 
-						post_status = 'publish' 
-					LIMIT 1",
-				strtolower($content) );
+			if ( false === ( $words = get_transient( 'dictionary_words' ) ) ) {
 
-			$tooltip_text = $wpdb->get_var( $query );
-			if( empty( $tooltip_text ) ) $tooltip_text = $content;
+				$query = $wpdb->prepare(
+					"SELECT post_content 
+						FROM $wpdb->posts 
+						WHERE 
+							LOWER(post_title) = '%s' AND 
+							post_type = 'dictionary_word' AND 
+							post_status = 'publish' 
+						LIMIT 1",
+					strtolower( $content ) );
 
-			return sprintf( "<a href=\"#\" class=\"wp-plugin-dictionary-word\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"%s\">%s</a>", $tooltip_text, $content );
+				$tooltip_text = $wpdb->get_var( $query );
+				if ( empty( $tooltip_text ) ) {
+					$tooltip_text = $content;
+				}
+
+				WP_Plugin_Dictionary_Posttype_Word::generate_transient();
+
+				return sprintf( "<a href=\"#\" class=\"wp-plugin-dictionary-word\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"%s\">%s</a>", $tooltip_text, $content );
+
+			} else {
+
+				$lowercase_content = strtolower( $content );
+				if ( is_array( $words ) && isset( $words[$lowercase_content] ) ) $tooltip_text = $words[$lowercase_content];
+				return sprintf( "<a href=\"#\" class=\"wp-plugin-dictionary-word\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"%s\">%s</a>", $tooltip_text, $content );
+
+			}
 
 		}
 

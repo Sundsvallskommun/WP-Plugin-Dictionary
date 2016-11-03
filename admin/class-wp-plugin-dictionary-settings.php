@@ -18,6 +18,7 @@ class WP_Plugin_Dictionary_Settings {
 	 * @access   public
 	 */
 	public function init() {
+
 		register_setting( 'wp_plugin_dictionary', 'wp_plugin_dictionary_options' );
 
 		add_settings_section(

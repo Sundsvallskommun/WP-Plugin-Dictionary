@@ -71,4 +71,55 @@ class WP_Plugin_Dictionary_Posttype_Word {
 
 	}
 
+
+	/**
+	 * Hook triggered on saving a dictionary word.
+	 * Save a transient for all dictionary words.
+	 *
+	 * @since    1.0.0
+	 * @access   public
+	 *
+	 * @param integer   the post id
+	 */
+	public function save( $post_id, $post, $update ) {
+
+		// Security checks
+		if ( ! current_user_can( 'edit_post', $post_id ) ) return $post_id;
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return $post_id;
+
+		// Check if this is a valid post type
+		if ( $_POST['post_type'] != 'dictionary_word' ) return $post_id;
+
+
+		self::generate_transient();
+
+	}
+
+
+	/**
+	 * Generate and set a transient for all dictionary words.
+	 *
+	 * @since    1.0.0
+	 * @access   public
+	 *
+	 */
+	public static function generate_transient() {
+
+		$posts = get_posts( array( 'post_type' => 'dictionary_word', 'number_of_posts' => -1, 'post_status' => 'publish' ) );
+		$transient = array();
+
+		if ( is_array( $posts ) && count( $posts ) > 0 ) {
+
+			foreach( $posts as $post ) {
+
+				$transient[strtolower( $post->post_title )] = $post->post_content;
+
+			}
+
+			set_transient( 'dictionary_words', $transient, 30 * DAY_IN_SECONDS );
+
+		}
+
+	}
+
 }
